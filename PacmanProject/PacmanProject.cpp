@@ -2,9 +2,9 @@
 #include <chrono>
 #include <thread>
 
-//wzorzec funkcji sprawdzaj¹cej czy dochodzi do kolizji miêdzy obiektami
+//wzorzec funkcji sprawdzajï¿½cej czy dochodzi do kolizji miï¿½dzy obiektami
 template <class T1, class T2>
-bool collision(T1& A, T2& B) // ZMIENIÆ NAZWÊ
+bool collision(T1& A, T2& B) // ZMIENIï¿½ NAZWï¿½
 {
     if ((A.right() >= B.left() && A.left() <= B.right()
         && A.bottom() >= B.top() && A.top() <= B.bottom()))
@@ -19,7 +19,9 @@ bool collision(T1& A, T2& B) // ZMIENIÆ NAZWÊ
 
 int main()
 {
+    
     //tworzymy tablice, ktora przechowuje bloczki, ktore skladaja sie na labirynt
+    
     Block tableBlocks[blocksAmount] = {
      Block(0, 0, 650.0f, 10.0f),
     Block(0, 610, 650.0f, 10.0f),
@@ -143,9 +145,9 @@ int main()
     bool backToMenu = false;
     bool backToSubmenu = false;
 
-    // Ustawienie domyœlnego okna z tytu³em Pacman o podanej rozdzielczoœci
+    // Ustawienie domyï¿½lnego okna z tytuï¿½em Pacman o podanej rozdzielczoï¿½ci
     RenderWindow window{ VideoMode{windowWith, windowHeight}, "Pacman" };
-    // utworzenie obiektów
+    // utworzenie obiektï¿½w
 
 
     Image logo;
@@ -187,9 +189,9 @@ int main()
     GameOver gameOverTime(250, 300);
     GameOver gameOverRecord(250, 420);
 
-    // aby gameloop dzia³a³ 60 razy na sekunde
+    // aby gameloop dziaï¿½aï¿½ 60 razy na sekunde
     window.setFramerateLimit(60);
-    // dowolne wydarzenie interakcji z u¿ytkownikiem
+    // dowolne wydarzenie interakcji z uï¿½ytkownikiem
     Event event;
     //zmienne potrzebne dla poruszania sie duszka
     int directionGhost1 = 1;
@@ -201,7 +203,7 @@ int main()
     int level = 0;
     // liczba zyc
     int life = 3;
-    //g³owna pêtla
+    //gï¿½owna pï¿½tla
     Pacman pacman(325, 308);
     Ghost ghost1(25, 20, "red");
     Ghost ghost2(25, 595, "green");
@@ -229,7 +231,7 @@ int main()
             switch (event.type)
             {
             case Event::KeyReleased:
-                // poruszanie siê u¿ytkownika w menu startowym
+                // poruszanie siï¿½ uï¿½ytkownika w menu startowym
                 switch (event.key.code)
                 {
                 case Keyboard::Up:
@@ -239,7 +241,7 @@ int main()
                     menu.moveDown(menu.menu, menu.color);
                     break;
                 case Keyboard::Return:
-                    // w zale¿noœci od tego czy wybierzemy play, options lub exit to wykonaj¹ siê odpowienie czynnoœci
+                    // w zaleï¿½noï¿½ci od tego czy wybierzemy play, options lub exit to wykonajï¿½ siï¿½ odpowienie czynnoï¿½ci
                     switch (menu.getPressedItem())
                     {
                     case 0:
@@ -285,7 +287,7 @@ int main()
                                 window.close();
                                 break;
                             }
-                            // jeœli dosz³o do kolizji pacmana z którymœ duszkiem
+                            // jeï¿½li doszï¿½o do kolizji pacmana z ktï¿½rymï¿½ duszkiem
                             if (collision(pacman, ghost1) == true || collision(pacman, ghost2) == true
                                 || collision(pacman, ghost3) == true || collision(pacman, ghost4) == true)
                             {
@@ -591,7 +593,7 @@ int main()
 
                             }
 
-                            //rysowanie obiektów
+                            //rysowanie obiektï¿½w
                             window.draw(pacman);
                             window.draw(ghost1);
                             window.draw(ghost2);
@@ -635,7 +637,7 @@ int main()
                                 switch (event.type)
                                 {
                                 case Event::KeyReleased:
-                                    // poruszanie siê u¿ytkownika w podmenu
+                                    // poruszanie siï¿½ uï¿½ytkownika w podmenu
                                     switch (event.key.code)
                                     {
                                     case Keyboard::Escape:
@@ -648,7 +650,7 @@ int main()
                                         subMenu.moveDown(subMenu.subMenu, subMenu.color);
                                         break;
                                     case Keyboard::Return:
-                                        // w zale¿noœci od tego czy wybierzemy play, options lub exit to wykonaj¹ siê odpowienie czynnoœci
+                                        // w zaleï¿½noï¿½ci od tego czy wybierzemy play, options lub exit to wykonajï¿½ siï¿½ odpowienie czynnoï¿½ci
                                         switch (subMenu.getPressedItem())
                                         {
                                         case 0:
