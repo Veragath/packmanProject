@@ -2,9 +2,9 @@
 #include <chrono>
 #include <thread>
 
-//wzorzec funkcji sprawdzaj¹cej czy dochodzi do kolizji miêdzy obiektami
+//wzorzec funkcji sprawdzajï¿½cej czy dochodzi do kolizji miï¿½dzy obiektami
 template <class T1, class T2>
-bool collision(T1& A, T2& B) // ZMIENIÆ NAZWÊ
+bool collision(T1& A, T2& B) // ZMIENIï¿½ NAZWï¿½
 {
     if ((A.right() >= B.left() && A.left() <= B.right()
         && A.bottom() >= B.top() && A.top() <= B.bottom()))
@@ -143,9 +143,9 @@ int main()
     bool backToMenu = false;
     bool backToSubmenu = false;
 
-    // Ustawienie domyœlnego okna z tytu³em Pacman o podanej rozdzielczoœci
+    // Ustawienie domyï¿½lnego okna z tytuï¿½em Pacman o podanej rozdzielczoï¿½ci
     RenderWindow window{ VideoMode{windowWith, windowHeight}, "Pacman" };
-    // utworzenie obiektów
+    // utworzenie obiektï¿½w
 
 
     Image logo;
@@ -187,9 +187,9 @@ int main()
     GameOver gameOverTime(250, 300);
     GameOver gameOverRecord(250, 420);
 
-    // aby gameloop dzia³a³ 60 razy na sekunde
+    // aby gameloop dziaï¿½aï¿½ 60 razy na sekunde
     window.setFramerateLimit(60);
-    // dowolne wydarzenie interakcji z u¿ytkownikiem
+    // dowolne wydarzenie interakcji z uï¿½ytkownikiem
     Event event;
     //zmienne potrzebne dla poruszania sie duszka
     int directionGhost1 = 1;
@@ -201,7 +201,7 @@ int main()
     int level = 0;
     // liczba zyc
     int life = 3;
-    //g³owna pêtla
+    //gï¿½owna pï¿½tla
     Pacman pacman(325, 308);
     Ghost ghost1(25, 20, "red");
     Ghost ghost2(25, 595, "green");
@@ -229,7 +229,7 @@ int main()
             switch (event.type)
             {
             case Event::KeyReleased:
-                // poruszanie siê u¿ytkownika w menu startowym
+                // poruszanie siï¿½ uï¿½ytkownika w menu startowym
                 switch (event.key.code)
                 {
                 case Keyboard::Up:
@@ -239,7 +239,7 @@ int main()
                     menu.moveDown(menu.menu, menu.color);
                     break;
                 case Keyboard::Return:
-                    // w zale¿noœci od tego czy wybierzemy play, options lub exit to wykonaj¹ siê odpowienie czynnoœci
+                    // w zaleï¿½noï¿½ci od tego czy wybierzemy play, options lub exit to wykonajï¿½ siï¿½ odpowienie czynnoï¿½ci
                     switch (menu.getPressedItem())
                     {
                     case 0:
@@ -274,6 +274,7 @@ int main()
 
                         while (backToMenu != true)
                         {
+                            int i=0;
                             collisionPackmanBlock = false;
 
                             setFruit(periodFruit, collisionPacmanApple, collisionPacmanOrange, collisionPacmanBanana, collisionPacmanCherry, collisionPacmanMushroom, apple, orange, banana, cherry, mushroom);
@@ -285,7 +286,7 @@ int main()
                                 window.close();
                                 break;
                             }
-                            // jeœli dosz³o do kolizji pacmana z którymœ duszkiem
+                            // jeï¿½li doszï¿½o do kolizji pacmana z ktï¿½rymï¿½ duszkiem
                             if (collision(pacman, ghost1) == true || collision(pacman, ghost2) == true
                                 || collision(pacman, ghost3) == true || collision(pacman, ghost4) == true)
                             {
@@ -591,37 +592,46 @@ int main()
 
                             }
 
-                            //rysowanie obiektów
-                            window.draw(pacman);
-                            window.draw(ghost1);
-                            window.draw(ghost2);
-                            window.draw(ghost3);
-                            window.draw(ghost4);
-
-                            window.draw(apple);
-                            window.draw(orange);
-                            window.draw(banana);
-                            window.draw(cherry);
-                            window.draw(mushroom);
-
-                            panelPoints.showingPoints(window, panelPoints.text, pointsAmount);
-                            elapsed = clockElapsed.getElapsedTime();
-                            panelTimeElapsed.showingTime(window, panelTimeElapsed.text, elapsed);
-                            panelLifeAmount.showingLife(window, panelLifeAmount.text);
-                            for (int i = 0; i < 3; i++)
+                            if(i % 5 == 0)
                             {
-                                window.draw(pacmanLife[i]);
+                                window.draw(pacman);
+                                window.draw(ghost1);
+                                window.draw(ghost2);
+                                window.draw(ghost3);
+                                window.draw(ghost4);
+
+                                window.draw(apple);
+                                window.draw(orange);
+                                window.draw(banana);
+                                window.draw(cherry);
+                                window.draw(mushroom);
+
+                                panelPoints.showingPoints(window, panelPoints.text, pointsAmount);
+                                elapsed = clockElapsed.getElapsedTime();
+                                panelTimeElapsed.showingTime(window, panelTimeElapsed.text, elapsed);
+                                panelLifeAmount.showingLife(window, panelLifeAmount.text);
+                                for (int i = 0; i < 3; i++)
+                                {
+                                    window.draw(pacmanLife[i]);
+                                }
+                                panelPower.showingPower(window, panelPower.text);
+                                window.draw(applePanel);
+                                window.draw(orangePanel);
+                                window.draw(bananaPanel);
+                                window.draw(cherryPanel);
+                                window.draw(mushroomPanel);
+                                panelLevel.showingLevel(window, panelLevel.text, level);
+                                panelRecord.showingRecord(window, panelRecord.text, pointsAmount);
                             }
-                            panelPower.showingPower(window, panelPower.text);
-                            window.draw(applePanel);
-                            window.draw(orangePanel);
-                            window.draw(bananaPanel);
-                            window.draw(cherryPanel);
-                            window.draw(mushroomPanel);
-                            panelLevel.showingLevel(window, panelLevel.text, level);
-                            panelRecord.showingRecord(window, panelRecord.text, pointsAmount);
+                            
+                            //rysowanie obiektï¿½w
 
                             window.display();
+                            if(i == 60)
+                            {
+                                i = 0;
+                            }
+                            i++;
                         }
                         backToMenu = false;
                         break;
@@ -635,7 +645,7 @@ int main()
                                 switch (event.type)
                                 {
                                 case Event::KeyReleased:
-                                    // poruszanie siê u¿ytkownika w podmenu
+                                    // poruszanie siï¿½ uï¿½ytkownika w podmenu
                                     switch (event.key.code)
                                     {
                                     case Keyboard::Escape:
@@ -648,7 +658,7 @@ int main()
                                         subMenu.moveDown(subMenu.subMenu, subMenu.color);
                                         break;
                                     case Keyboard::Return:
-                                        // w zale¿noœci od tego czy wybierzemy play, options lub exit to wykonaj¹ siê odpowienie czynnoœci
+                                        // w zaleï¿½noï¿½ci od tego czy wybierzemy play, options lub exit to wykonajï¿½ siï¿½ odpowienie czynnoï¿½ci
                                         switch (subMenu.getPressedItem())
                                         {
                                         case 0:
