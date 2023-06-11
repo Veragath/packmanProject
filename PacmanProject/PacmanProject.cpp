@@ -19,9 +19,7 @@ bool collision(T1& A, T2& B) // ZMIENI� NAZW�
 
 int main()
 {
-    
     //tworzymy tablice, ktora przechowuje bloczki, ktore skladaja sie na labirynt
-    
     Block tableBlocks[blocksAmount] = {
      Block(0, 0, 650.0f, 10.0f),
     Block(0, 610, 650.0f, 10.0f),
@@ -216,11 +214,6 @@ int main()
     Cherry cherry(158, 77);
     Mushroom mushroom(178, 77);
 
-    window.draw(apple);
-    window.draw(orange);
-    window.draw(banana);
-    window.draw(cherry);
-    window.draw(mushroom);
     applePanel.fruit.setColor(Color(255, 255, 255, 100));
     orangePanel.fruit.setColor(Color(255, 255, 255, 100));
     bananaPanel.fruit.setColor(Color(255, 255, 255, 100));
@@ -228,6 +221,7 @@ int main()
     mushroomPanel.fruit.setColor(Color(255, 255, 255, 100));
     while (true)
     {
+        std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
         while (window.pollEvent(event))
         {
 
@@ -280,6 +274,7 @@ int main()
 
                         while (backToMenu != true)
                         {
+                            int i=0;
                             collisionPackmanBlock = false;
 
                             setFruit(periodFruit, collisionPacmanApple, collisionPacmanOrange, collisionPacmanBanana, collisionPacmanCherry, collisionPacmanMushroom, apple, orange, banana, cherry, mushroom);
@@ -597,26 +592,46 @@ int main()
 
                             }
 
-                            //rysowanie obiekt�w
-                            window.draw(pacman);
-                            window.draw(ghost1);
-                            window.draw(ghost2);
-                            window.draw(ghost3);
-                            window.draw(ghost4);
-
-                            panelPoints.showingPoints(window, panelPoints.text, pointsAmount);
-                            elapsed = clockElapsed.getElapsedTime();
-                            panelTimeElapsed.showingTime(window, panelTimeElapsed.text, elapsed);
-                            panelLifeAmount.showingLife(window, panelLifeAmount.text);
-                            for (int i = 0; i < 3; i++)
+                            if(i % 5 == 0)
                             {
-                                window.draw(pacmanLife[i]);
+                                window.draw(pacman);
+                                window.draw(ghost1);
+                                window.draw(ghost2);
+                                window.draw(ghost3);
+                                window.draw(ghost4);
+
+                                window.draw(apple);
+                                window.draw(orange);
+                                window.draw(banana);
+                                window.draw(cherry);
+                                window.draw(mushroom);
+
+                                panelPoints.showingPoints(window, panelPoints.text, pointsAmount);
+                                elapsed = clockElapsed.getElapsedTime();
+                                panelTimeElapsed.showingTime(window, panelTimeElapsed.text, elapsed);
+                                panelLifeAmount.showingLife(window, panelLifeAmount.text);
+                                for (int i = 0; i < 3; i++)
+                                {
+                                    window.draw(pacmanLife[i]);
+                                }
+                                panelPower.showingPower(window, panelPower.text);
+                                window.draw(applePanel);
+                                window.draw(orangePanel);
+                                window.draw(bananaPanel);
+                                window.draw(cherryPanel);
+                                window.draw(mushroomPanel);
+                                panelLevel.showingLevel(window, panelLevel.text, level);
+                                panelRecord.showingRecord(window, panelRecord.text, pointsAmount);
                             }
-                            panelPower.showingPower(window, panelPower.text);
-                            panelLevel.showingLevel(window, panelLevel.text, level);
-                            panelRecord.showingRecord(window, panelRecord.text, pointsAmount);
+                            
+                            //rysowanie obiekt�w
 
                             window.display();
+                            if(i == 60)
+                            {
+                                i = 0;
+                            }
+                            i++;
                         }
                         backToMenu = false;
                         break;
