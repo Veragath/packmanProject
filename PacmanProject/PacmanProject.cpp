@@ -216,6 +216,11 @@ int main()
     Cherry cherry(158, 77);
     Mushroom mushroom(178, 77);
 
+    window.draw(apple);
+    window.draw(orange);
+    window.draw(banana);
+    window.draw(cherry);
+    window.draw(mushroom);
     applePanel.fruit.setColor(Color(255, 255, 255, 100));
     orangePanel.fruit.setColor(Color(255, 255, 255, 100));
     bananaPanel.fruit.setColor(Color(255, 255, 255, 100));
@@ -223,7 +228,6 @@ int main()
     mushroomPanel.fruit.setColor(Color(255, 255, 255, 100));
     while (true)
     {
-        std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
         while (window.pollEvent(event))
         {
 
@@ -600,12 +604,6 @@ int main()
                             window.draw(ghost3);
                             window.draw(ghost4);
 
-                            window.draw(apple);
-                            window.draw(orange);
-                            window.draw(banana);
-                            window.draw(cherry);
-                            window.draw(mushroom);
-
                             panelPoints.showingPoints(window, panelPoints.text, pointsAmount);
                             elapsed = clockElapsed.getElapsedTime();
                             panelTimeElapsed.showingTime(window, panelTimeElapsed.text, elapsed);
@@ -615,11 +613,6 @@ int main()
                                 window.draw(pacmanLife[i]);
                             }
                             panelPower.showingPower(window, panelPower.text);
-                            window.draw(applePanel);
-                            window.draw(orangePanel);
-                            window.draw(bananaPanel);
-                            window.draw(cherryPanel);
-                            window.draw(mushroomPanel);
                             panelLevel.showingLevel(window, panelLevel.text, level);
                             panelRecord.showingRecord(window, panelRecord.text, pointsAmount);
 
