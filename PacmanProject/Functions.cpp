@@ -1,14 +1,15 @@
-﻿#include "klasy.h"
+﻿#include "Classes.h"
 
 SoundPlayer::SoundPlayer(string filename)
 {
+	// pobranie dzwieku
 	if (!buffer.loadFromFile(filename))
 	{
 		cout << "Nie załadowano dzwieku" << endl;
 	}
 	sound.setBuffer(buffer);
 }
-
+// funkcja odpowiadajaca za odtwarzanie
 void SoundPlayer::play()
 {
 	sound.play();
@@ -52,22 +53,22 @@ Menu::Menu(float width, float height)
 {
 	if (!font.loadFromFile("fonts/deltha.ttf"))
 	{
-		//TU TRZEBA CO� WPISA�
+		// w przypadku gdy nie uda sie pobrac czcionki wyswietli sie w konsoli domyslny tekst
 	}
-
+	// podzielenie naszego menu na 3 czesci
 	menu[0].setFont(font);
 	menu[0].setFillColor(Color{ 60,105,180 });
-	menu[0].setString("Play");
+	menu[0].setString("Graj");
 	menu[0].setPosition(Vector2f(width / 2, height / 4 * 1));
 
 	menu[1].setFont(font);
 	menu[1].setFillColor(Color::White);
-	menu[1].setString("More");
+	menu[1].setString("Wiecej");
 	menu[1].setPosition(Vector2f(width / 2, height / 4 * 2));
 
 	menu[2].setFont(font);
 	menu[2].setFillColor(Color::White);
-	menu[2].setString("Exit");
+	menu[2].setString("Wyjscie");
 	menu[2].setPosition(Vector2f(width / 2, height / 4 * 3));
 
 	selectedItemIndex = 0;
@@ -81,13 +82,14 @@ void Menu::draw(RenderWindow& window, Text text[])
 	}
 }
 
-// funkcje odpowiadajaca za wyglad menu
+// funkcje odpowiadajaca za wyglad menu 
 void Menu::moveUp(Text text[], string color)
 {
 	if (selectedItemIndex - 1 >= 0)
 	{
 		text[selectedItemIndex].setFillColor(Color::White);
 		selectedItemIndex--;
+		// w zaleznosci od tego gdzie jest uzytkownik to dana opcja podswietla sie
 		if (color == "red")
 		{
 			text[selectedItemIndex].setFillColor(Color{ 195,85,85 });
@@ -118,27 +120,28 @@ void Menu::moveDown(Text text[], string color)
 
 
 //konstruktor przydzielajacy dane o opcjach
-SubMenu::SubMenu(float width2, float height2)
+// analogiczny konstruktor parametryczny jak dla klasy menu
+SubMenu::SubMenu(float width, float height)
 {
 	if (!font.loadFromFile("fonts/deltha.ttf"))
 	{
-		cout << "Niezaladowano czcionki";
+		// w przypadku gdy nie uda sie pobrac czcionki wyswietli sie w konsoli domyslny tekst
 	}
 
 	subMenu[0].setFont(font);
 	subMenu[0].setFillColor(Color{ 195,85,85 });
-	subMenu[0].setString("Instruction");
-	subMenu[0].setPosition(Vector2f(width2 / 2, height2 / 4 * 1));
+	subMenu[0].setString("Instrukcja");
+	subMenu[0].setPosition(Vector2f(width / 2, height / 4 * 1));
 
 	subMenu[1].setFont(font);
 	subMenu[1].setFillColor(Color::White);
-	subMenu[1].setString("About us");
-	subMenu[1].setPosition(Vector2f(width2 / 2, height2 / 4 * 2));
+	subMenu[1].setString("O nas");
+	subMenu[1].setPosition(Vector2f(width / 2, height / 4 * 2));
 
 	subMenu[2].setFont(font);
 	subMenu[2].setFillColor(Color::White);
-	subMenu[2].setString("Comeback");
-	subMenu[2].setPosition(Vector2f(width2 / 2, height2 / 4 * 3));
+	subMenu[2].setString("Powrot");
+	subMenu[2].setPosition(Vector2f(width / 2, height / 4 * 3));
 
 	selectedItemIndex = 0;
 }
@@ -149,7 +152,7 @@ Information::Information(float width, float height)
 	//sprawdzenie czy mamy w pliku dana czcionke
 	if (!font.loadFromFile("fonts/arial.ttf"))
 	{
-		cout << "Niezaladowano czcionki";
+		// w przypadku gdy nie uda sie pobrac czcionki wyswietli sie w konsoli domyslny tekst
 	}
 
 	text.setFont(font);
@@ -157,22 +160,66 @@ Information::Information(float width, float height)
 	text.setFillColor(Color::White);
 	text.setString("");
 }
+// wyswietlanie owocow w instrukcji 
+void drawFruit(RenderWindow& window, Texture texture, string fruit, float fromTop)
+{
+	if (!texture.loadFromFile("images/" + fruit + ".png"))
+	{
+		// w przypadku gdy nie uda sie pobrac obrazu wyswietli sie w konsoli domyslny tekst informujacy o bledzie
+	}
+	Sprite sprite(texture);
+	sprite.setPosition(Vector2f(21.0f, fromTop));
+	window.draw(sprite);
+}
 
 // pokazywanie instrukcji
 void Information::informationShowing(RenderWindow& window, Text text, string filename)
 {
+	// pokazywanie instrukcji za pomoca odczytu z plikow
 	ifstream file(filename);
 	string line;
-	float fromTop = 6.0;
+	Texture texture;
+	// okreslanie dodatkowej odleglosci od lewej czesci ekranu
+	float fromLeftPlus = 0.0;
+	float fromTop = 12.0;
 	if (file.good())
 	{
 		while (!file.eof())
 		{
 			getline(file, line);
-			text.setString(line);
-			text.setPosition(Vector2f(9.0f, fromTop));
-			window.draw(text);
-			fromTop += 23.0;
+			if (line == "jablko")
+			{
+				drawFruit(window, texture, "apple", fromTop);
+				fromLeftPlus = 41.0;
+			}
+			else if (line == "pomarancza")
+			{
+				drawFruit(window, texture, "orange", fromTop);
+				fromLeftPlus = 41.0;
+			}
+			else if (line == "banan")
+			{
+				drawFruit(window, texture, "banana", fromTop);
+				fromLeftPlus = 41.0;
+			}
+			else if (line == "wisnia")
+			{
+				drawFruit(window, texture, "cherry", fromTop);
+				fromLeftPlus = 41.0;
+			}
+			else if (line == "grzyb")
+			{
+				drawFruit(window, texture, "mushroom", fromTop);
+				fromLeftPlus = 41.0;
+			}
+			else
+			{
+				text.setString(line);
+				text.setPosition(Vector2f(15.0f + fromLeftPlus, fromTop));
+				window.draw(text);
+				fromTop += 25.0;
+				fromLeftPlus = 0;
+			}
 		}
 		file.close();
 	}
@@ -183,8 +230,9 @@ void Information::informationShowing(RenderWindow& window, Text text, string fil
 	// pokazywanie ponizej instrukcji co nalezy zrobic aby wrocic
 	fromTop += 40.0;
 	text.setString("Nacisnij 'Esc', aby wrocic");
+	// ustawienie czcionki
 	text.setStyle(Text::Italic);
-	text.setPosition(Vector2f(9.0f, fromTop));
+	text.setPosition(Vector2f(15.0f, fromTop));
 	window.draw(text);
 }
 
@@ -194,10 +242,11 @@ Pacman::Pacman(float x, float y)
 {
 	if (!texture.loadFromFile("images/pacman.png"))
 	{
-		cout << "Niezaladowano obrazu";
+		
 	}
 	pacman.setTexture(texture);
 	pacman.setPosition(x, y);
+	// zmiana punktu odniesienia
 	pacman.setOrigin(this->texture.getSize().x / 2.f, this->texture.getSize().x / 2.f);
 }
 //renderowanie pacmana
@@ -205,7 +254,7 @@ void Pacman::draw(RenderTarget& target, RenderStates state) const
 {
 	target.draw(this->pacman, state);
 }
-// 4 funkcje zwracajace dane o najbardziej wysunetych punktach pacmana
+// 4 funkcje zwracajace dane o najbardziej wysunetych punktach pacmana, pamietajac o tym w lewym gornym rogu znajduje sie punkt (0,0)
 float Pacman::left()
 {
 	return this->pacman.getPosition().x - texture.getSize().x / 2.f;
@@ -230,6 +279,7 @@ void Pacman::update(bool collisionPacmanMushroom, Time periodFruit)
 {
 	this->pacman.move(this->velocity);
 	float changeVelocity;
+	//jesli pacman zje grzybka to jego predkosc zmniejsza sie dwukrotnie
 	if (collisionPacmanMushroom == true && periodFruit >= seconds(65)
 		&& periodFruit < seconds(80))
 	{
@@ -244,6 +294,7 @@ void Pacman::update(bool collisionPacmanMushroom, Time periodFruit)
 	{
 		velocity.x = -changeVelocity;
 		velocity.y = 0;
+		// rotacja pacmana aby mial skierowany dziobek w kierunku ruchu
 		pacman.setRotation(180);
 	}
 	else if (Keyboard::isKeyPressed(Keyboard::Key::Right))
@@ -282,37 +333,30 @@ Ghost::Ghost(float x, float y, string color)
 	{
 		if (!texture.loadFromFile("images/ghostRed.png"))
 		{
-			cout << "Niezaladowano obrazu";
+
 		}
 	}
 	else if (color == "green")
 	{
 		if (!texture.loadFromFile("images/ghostGreen.png"))
 		{
-			cout << "Niezaladowano obrazu";
+
 		}
 	}
 	else if (color == "magenta")
 	{
 		if (!texture.loadFromFile("images/ghostMagenta.png"))
 		{
-			cout << "Niezaladowano obrazu";
+
 		}
 	}
 	else if (color == "cyan")
 	{
 		if (!texture.loadFromFile("images/ghostCyan.png"))
 		{
-			cout << "Niezaladowano obrazu";
+			
 		}
-	}/*
-	else
-	{
-		if (!texture.loadFromFile("ghostRed.png"))
-		{
-			cout << "Niezaladowano obrazu";
-		}
-	}	*/
+	}
 	ghost.setTexture(texture);
 	ghost.setPosition(x, y);
 	ghost.setOrigin(this->texture.getSize().x / 2.f, this->texture.getSize().x / 2.f);
@@ -323,7 +367,7 @@ void Ghost::draw(RenderTarget& target, RenderStates state) const
 	target.draw(this->ghost, state);
 }
 
-// 4 funkcje zwracajace dane o najbardziej wysunietych punktach duchow
+// 4 funkcje zwracajace dane o najbardziej wysunietych punktach duchow, pamietajac o tym w lewym gornym rogu znajduje sie punkt (0,0)
 float Ghost::left()
 {
 	return this->ghost.getPosition().x - texture.getSize().x / 2.f;
@@ -343,17 +387,10 @@ float Ghost::bottom()
 {
 	return this->ghost.getPosition().y + texture.getSize().y / 2.f;
 }
-/*
-Vector2f Ghost::getPosition()
-{
-	return shape.getPosition();
-}*/
 
-//tego chyba nie uzywamy
-// aktualizacja ruchu duchow tak aby nie wychodzily poza okno
+// aktualizacja ruchu duchow
 void Ghost::update()
 {
-
 	this->ghost.move(this->velocity);
 }
 
@@ -363,14 +400,16 @@ int Ghost::whichDirection() // 1 - lewo; 2 - prawo; 3 - gora; 4 - dol
 	return rand() % 4 + 1;
 }
 
-// ustalanie kierunku predkosci pacmana
+// ustalanie kierunku predkosci duszka
 void Ghost::updateChange(int direction, Time periodFruit, bool collisionPacmanCherry, int level)
 {
 	this->ghost.move(this->velocity);
+	// roznica w predkosci miedzy kolejnymi poziomami
 	float difference = 0.2 * (level - 1);
 	float changeVelocity;
-	if (collisionPacmanCherry == true && periodFruit >= seconds(20)
-		&& periodFruit < seconds(25))
+	// gdy pacman zje wisnie to duszek zmniejsza predkosc dwukrotnie
+	if (collisionPacmanCherry == true && periodFruit >= seconds(50)
+		&& periodFruit < seconds(62))
 	{
 		changeVelocity = (ghostVelocity / 2) + difference;
 	}
@@ -406,12 +445,13 @@ void Ghost::updateChange(int direction, Time periodFruit, bool collisionPacmanCh
 	}
 }
 
-// funkcja sprawdzajaca kolizje miedzy duszkiem a labiryntem
+// funkcja sprawdzajaca potencjalne kolizje miedzy duszkiem a labiryntem
 int collisionGhostBlock(Ghost a, Block b, int direction)
 {
 	if (direction == 1 && a.right() - 7 >= b.left() && a.left() - 7 <= b.right()
 		&& a.bottom() >= b.top() && a.top() <= b.bottom())
 	{
+		// gdy dojdze do potencjalnej kolizji to wtedy zmieniami kierunek predkosci duszka
 		return collisionGhostBlock(a, b, rand() % 2 + 3);
 	}
 	else if (direction == 2 && a.right() + 7 >= b.left() && a.left() + 7 <= b.right()
@@ -438,7 +478,6 @@ int collisionGhostBlock(Ghost a, Block b, int direction)
 // konstruktor odpowiadajacy za ustawienie parametrow punktu
 Point::Point()
 {
-	shape.setPosition(22, 22);
 	shape.setRadius(this->pointRadius);
 	shape.setFillColor(Color::White);
 	shape.setOrigin(3.0f, 3.0f);
@@ -449,7 +488,7 @@ void Point::draw(RenderTarget& target, RenderStates state) const
 {
 	target.draw(this->shape, state);
 }
-
+// funkcje zwracajace punkty najbardziej wychylone lewo, prawo, gora i dol, pamietajac o tym w lewym gornym rogu znajduje sie punkt (0,0)
 float Point::left()
 {
 	return this->shape.getPosition().x - shape.getRadius();
@@ -470,16 +509,18 @@ float Point::bottom()
 	return this->shape.getPosition().y + shape.getRadius();
 }
 
+// funkcja, ktora zmienia kolor duszku na przezroczysty (przyda sie ona do systemu kolizji)
 void Point::changeColor()
 {
 	shape.setFillColor(Color::Transparent);
 }
 
+// przydzielanie informacji o panelu
 Panel::Panel(float x, float y)
 {
 	if (!font.loadFromFile("fonts/deltha.ttf"))
 	{
-		cout << "Nie zaladowano czcionki";
+		// w przypadku gdy nie uda sie pobrac czcionki wyswietli sie w konsoli domyslny tekst
 	}
 	text.setFont(font);
 	text.setCharacterSize(16);
@@ -492,7 +533,9 @@ Panel::Panel(float x, float y)
 
 void Panel::showingPoints(RenderWindow& window, Text text, int pointsAmount)
 {
+	// ustawienie tekstu
 	text.setString("Punkty: \n" + to_string(pointsAmount));
+	// wyswietlanie tego tekstu w odpowiednim miejscu
 	window.draw(text);
 }
 
@@ -543,7 +586,7 @@ Apple::Apple(float x, float y)
 {
 	if (!texture.loadFromFile("images/apple.png"))
 	{
-		cout << "Niezaladowano obrazu";
+		// w przypadku gdy nie uda sie pobrac obrazu wyswietli sie w konsoli domyslny tekst
 	}
 	fruit.setTexture(texture);
 	fruit.setPosition(x, y);
@@ -553,7 +596,7 @@ Orange::Orange(float x, float y)
 {
 	if (!texture.loadFromFile("images/orange.png"))
 	{
-		cout << "Niezaladowano obrazu";
+		// w przypadku gdy nie uda sie pobrac obrazu wyswietli sie w konsoli domyslny tekst
 	}
 	fruit.setTexture(texture);
 	fruit.setPosition(x, y);
@@ -563,7 +606,7 @@ Banana::Banana(float x, float y)
 {
 	if (!texture.loadFromFile("images/banana.png"))
 	{
-		cout << "Niezaladowano obrazu";
+		// w przypadku gdy nie uda sie pobrac obrazu wyswietli sie w konsoli domyslny tekst
 	}
 	fruit.setTexture(texture);
 	fruit.setPosition(x, y);
@@ -573,7 +616,7 @@ Cherry::Cherry(float x, float y)
 {
 	if (!texture.loadFromFile("images/cherry.png"))
 	{
-		cout << "Niezaladowano obrazu";
+		// w przypadku gdy nie uda sie pobrac obrazu wyswietli sie w konsoli domyslny tekst
 	}
 	fruit.setTexture(texture);
 	fruit.setPosition(x, y);
@@ -583,7 +626,7 @@ Mushroom::Mushroom(float x, float y)
 {
 	if (!texture.loadFromFile("images/mushroom.png"))
 	{
-		cout << "Niezaladowano obrazu";
+		// w przypadku gdy nie uda sie pobrac obrazu wyswietli sie w konsoli domyslny tekst
 	}
 	fruit.setTexture(texture);
 	fruit.setPosition(x, y);
@@ -615,15 +658,7 @@ float Fruit::bottom()
 	return this->fruit.getPosition().y + texture.getSize().y / 2.f;
 }
 
-
-
-/*
-Vector2f Fruit::getPosition()
-{
-	return fruit.getPosition();
-}*/
-
-
+// funkcja odpowiadajaca za wyswietlanie owocow na planszy w zaleznosci od momentu rozgrywki oraz czy nastapila kolizja z owocem
 void setFruit(Time& periodFruit, bool& collisionPacmanApple, bool& collisionPacmanOrange, bool& collisionPacmanBanana, bool& collisionPacmanCherry, bool& collisionPacmanMushroom, Fruit& apple, Fruit& orange, Fruit& banana, Fruit& cherry, Fruit& mushroom)
 {
 	if (periodFruit >= seconds(5) && periodFruit < seconds(17))
@@ -702,6 +737,7 @@ void setFruit(Time& periodFruit, bool& collisionPacmanApple, bool& collisionPacm
 			mushroom.appear();
 		}
 	}
+	// ustawienie poczatkowego stanu rozgrywki po uplywie 80 sekund
 	else if (periodFruit >= seconds(80))
 	{
 		periodFruit = seconds(0);
@@ -720,6 +756,7 @@ void setFruit(Time& periodFruit, bool& collisionPacmanApple, bool& collisionPacm
 		mushroom.disappear();
 	}
 }
+// funkcje odpowiadajace za wyswietlanie lub ustawwienie owocow na kolor przezroczysty (wtedy owoc nie bierze udzialu w grze) 
 void Fruit::appear()
 {
 	fruit.setColor(Color::White);
@@ -781,6 +818,7 @@ void GameOver::showingRecord(RenderWindow& window, Text text, int pointsAmount)
 	window.draw(text);
 }
 
+// funkcja zapisujaca i odczytujaca z pliku najlepszy wynik
 string recordFile(int pointsAmount)
 {
 	ifstream fileIn("txt/record.txt");
@@ -806,5 +844,3 @@ string recordFile(int pointsAmount)
 		return "blad";
 	}
 }
-
-

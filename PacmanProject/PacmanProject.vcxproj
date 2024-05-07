@@ -147,11 +147,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Funkcje.cpp" />
+    <ClCompile Include="Functions.cpp" />
     <ClCompile Include="PacmanProject.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Klasy.h" />
+    <ClInclude Include="Classes.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

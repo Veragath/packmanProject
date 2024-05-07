@@ -1,10 +1,8 @@
-#include "Klasy.h"
-#include <chrono>
-#include <thread>
+#include "Classes.h"
 
-//wzorzec funkcji sprawdzaj�cej czy dochodzi do kolizji mi�dzy obiektami
+//wzorzec funkcji sprawdzajacej czy dochodzi do kolizji miedzy obiektami
 template <class T1, class T2>
-bool collision(T1& A, T2& B) // ZMIENI� NAZW�
+bool collision(T1& A, T2& B)
 {
     if ((A.right() >= B.left() && A.left() <= B.right()
         && A.bottom() >= B.top() && A.top() <= B.bottom()))
@@ -109,14 +107,17 @@ int main()
     Block(211, 323, 63.0f, 20.0f),
     Block(497, 147, 41.0f, 55.0f)
     };
+
+    // utworzenie tablicy z punktami
     Point tablePoints[29 * 37] = {};
 
+    //zmienne przechowujace informacje o tym czy dany owoc dziala
     bool collisionPacmanApple = false;
     bool collisionPacmanOrange = false;
     bool collisionPacmanBanana = false;
     bool collisionPacmanCherry = false;
     bool collisionPacmanMushroom = false;
-
+    // zmienna, ktora wskazuje na jakim indeksie znjadujemy sie w tablicy 
     int pointIndex = 0;
     //petla, ktora dodaje do tablicy punkty
     for (int i = 22; i < 650; i += 22)
@@ -126,7 +127,7 @@ int main()
             tablePoints[pointIndex++].shape.setPosition(i, j);
         }
     }
-
+    //zmienne przechowujace informacje o tym czy dochodzi do kolizji pacmana z labiryntem
     bool collisionPackmanBlock;
 
     // ponizsze odpowiadaja za mierzenie czasu
@@ -137,17 +138,18 @@ int main()
     Time periodFruit = seconds(0);
     Time elapsed;
 
+    // potrzebne do losowania bez powtorzen
     srand(time(NULL));
 
     //zmienne potrzebne dla menu
     bool backToMenu = false;
     bool backToSubmenu = false;
 
-    // Ustawienie domy�lnego okna z tytu�em Pacman o podanej rozdzielczo�ci
+    // Ustawienie domy�lnego okna z tytulem Pacman o podanej rozdzielczo�ci
     RenderWindow window{ VideoMode{windowWith, windowHeight}, "Pacman" };
     // utworzenie obiekt�w
 
-
+    // pobieranie obrazu pacmana aby ustawic logo 
     Image logo;
     if (!logo.loadFromFile("images/pacman.png"))
     {
@@ -155,15 +157,15 @@ int main()
     }
 
     window.setIcon(logo.getSize().x, logo.getSize().y, logo.getPixelsPtr());
-
+    // zmienne odpowiadajace za dzwiek
     SoundPlayer soundPoint("sounds/point.wav");
     SoundPlayer soundFruit("sounds/fruit.wav");
     SoundPlayer soundEnd("sounds/end.wav");
+    
     Menu menu(window.getSize().x, window.getSize().y);
     SubMenu subMenu(window.getSize().x, window.getSize().y);
     Information instruction(window.getSize().x, window.getSize().y);
     Information aboutUs(window.getSize().x, window.getSize().y);
-
     Panel panelPoints(680, 50);
     Panel panelTimeElapsed(680, 140);
     Panel panelLifeAmount(680, 230);
@@ -187,9 +189,21 @@ int main()
     GameOver gameOverTime(250, 300);
     GameOver gameOverRecord(250, 420);
 
-    // aby gameloop dzia�a� 60 razy na sekunde
+    Pacman pacman(325, 309);
+    Ghost ghost1(25, 20, "red");
+    Ghost ghost2(25, 595, "green");
+    Ghost ghost3(640, 20, "magenta");
+    Ghost ghost4(640, 595, "cyan");
+
+    Apple apple(100, 61);
+    Orange orange(541, 81);
+    Banana banana(563, 526);
+    Cherry cherry(99, 476);
+    Mushroom mushroom(409, 300);
+
+    // ustawienie aby rozgrywka dzialala 60 klatek na sekunde
     window.setFramerateLimit(60);
-    // dowolne wydarzenie interakcji z u�ytkownikiem
+    // dowolne wydarzenie zwiazane z interakcja z uzytkownikiem
     Event event;
     //zmienne potrzebne dla poruszania sie duszka
     int directionGhost1 = 1;
@@ -201,35 +215,24 @@ int main()
     int level = 0;
     // liczba zyc
     int life = 3;
-    //g�owna p�tla
-    Pacman pacman(325, 308);
-    Ghost ghost1(25, 20, "red");
-    Ghost ghost2(25, 595, "green");
-    Ghost ghost3(640, 20, "magenta");
-    Ghost ghost4(640, 595, "cyan");
-
-    Apple apple(100, 60);
-    Orange orange(13, 92);
-    Banana banana(58, 77);
-    Cherry cherry(158, 77);
-    Mushroom mushroom(178, 77);
-
+    
+    // ustawenie domyslnego koloru owocow w panelu
     applePanel.fruit.setColor(Color(255, 255, 255, 100));
     orangePanel.fruit.setColor(Color(255, 255, 255, 100));
     bananaPanel.fruit.setColor(Color(255, 255, 255, 100));
     cherryPanel.fruit.setColor(Color(255, 255, 255, 100));
     mushroomPanel.fruit.setColor(Color(255, 255, 255, 100));
+
+    //glowna petla
     while (true)
     {
-        std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
+        this_thread::sleep_for(chrono::nanoseconds(1000));
         while (window.pollEvent(event))
         {
-
-            // utworzenie obiektow 
             switch (event.type)
             {
             case Event::KeyReleased:
-                // poruszanie si� u�ytkownika w menu startowym
+                // poruszanie sie uzytkownika w menu startowym
                 switch (event.key.code)
                 {
                 case Keyboard::Up:
@@ -239,20 +242,16 @@ int main()
                     menu.moveDown(menu.menu, menu.color);
                     break;
                 case Keyboard::Return:
-                    // w zale�no�ci od tego czy wybierzemy play, options lub exit to wykonaj� si� odpowienie czynno�ci
+                    // w zaleznosci od tego czy wybierzemy graj, opcje lub wyjscie to wykonaja sie odpowiednie czynnosci
                     switch (menu.getPressedItem())
                     {
                     case 0:
-                        std::cout << "Play button" << endl;
-
-
+                        // ustawienie na poczatku rozgrywki wszystkch puntkow na widoczny kolor jesli nie maja kolizji z bloczkiem (wtedy ustawiamy je na przeroczysty kolor)
                         for (int i = 0; i < 29 * 37; i++)
-                        {
+                        {  
                             tablePoints[i].shape.setFillColor(Color::White);
-
                             for (int j = 0; j < blocksAmount; j++)
                             {
-                                // w przypadku gdy dochodzi do kolizji punktu z labiryntem to zmieniamy kolor punktu na przezroczysty
                                 if (collision(tablePoints[i], tableBlocks[j]) == true)
                                 {
                                     tablePoints[i].changeColor();
@@ -260,25 +259,27 @@ int main()
                             }
                         }
 
-                        //(zeby owoce pokazywaly sie od nowa)
+                        //zeby czas dla owocow pokazywal sie od nowa
                         clockElapsed.restart();
                         periodFruit = seconds(0);
 
+                        // stan pocztatkowy gry
                         pointsAmount = 0;
                         life = 3;
-
+                        level = 0;
                         for (int i = 0; i < 3; i++)
                         {
                             pacmanLife[i].pacman.setColor(Color::White);
                         }
-
+                        // petla gdy juz wejdziemy do rozgrywki
                         while (backToMenu != true)
                         {
-                            int i=0;
+                            // zmienna, ktora zwraca liczbe klatek 
+                            int i = 0;
                             collisionPackmanBlock = false;
 
+                            // ustawianie owocow na planszy 
                             setFruit(periodFruit, collisionPacmanApple, collisionPacmanOrange, collisionPacmanBanana, collisionPacmanCherry, collisionPacmanMushroom, apple, orange, banana, cherry, mushroom);
-
 
                             window.clear(Color::Black);
                             if (event.type == Event::Closed)
@@ -286,11 +287,13 @@ int main()
                                 window.close();
                                 break;
                             }
-                            // je�li dosz�o do kolizji pacmana z kt�rym� duszkiem
+                            // warunek gdy dochodzi do kolizji pacmana z ktoryms duszkiem
                             if (collision(pacman, ghost1) == true || collision(pacman, ghost2) == true
                                 || collision(pacman, ghost3) == true || collision(pacman, ghost4) == true)
                             {
+                                // wywolanie smutnego dzwieku 
                                 soundEnd.play();
+                                // ustawienie obietkow na ich stan poczatkowy 
                                 pacman.pacman.setPosition(325, 308);
                                 pacman.pacman.setRotation(0);
                                 ghost1.ghost.setPosition(25, 20);
@@ -299,7 +302,7 @@ int main()
                                 ghost4.ghost.setPosition(640, 595);
                                 life--;
                                 pacmanLife[life].pacman.setColor(Color(255, 255, 255, 100));
-                                cout << life;
+                                // warunek gdy gracz straci wszyskie zycia
                                 if (life == 0)
                                 {
                                     while (backToMenu != true)
@@ -311,6 +314,7 @@ int main()
                                             case Event::KeyReleased:
                                                 switch (event.key.code)
                                                 {
+                                                // powrot do menu startowego po nacisnieciu entera
                                                 case Keyboard::Enter:
                                                     backToMenu = true;
                                                     break;
@@ -323,7 +327,7 @@ int main()
                                         }
 
                                         window.clear(Color::Black);
-                                        
+                                        // pokazywanie wynikow koncowych
                                         gameOverTitle.showingTitle(window, gameOverTitle.text, "Game Over");                                        
                                         gameOverPoints.showingPoints(window, gameOverPoints.text, pointsAmount);
                                         gameOverTime.showingTime(window, gameOverTime.text, elapsed);
@@ -379,13 +383,17 @@ int main()
                                 }
                             }
                             periodFruit += clockFruit.restart();
+                            // warunek gdy dochodzi do kolizji pacmana z dzialajacym owocem
                             if (apple.fruit.getColor() != Color::Transparent && collision(pacman, apple) == true)
                             {
                                 collisionPacmanApple = true;
+                                // dzwiek zjadanego owoca
                                 soundFruit.play();
                                 pointsAmount = pointsAmount + 25;
+                                // podswietlanie w panelu dzialajacego owoca
                                 applePanel.fruit.setColor(Color::White);
                             }
+                            // gdy owoc jeszcze dziala a minal jego czas dzialana to zmieniami jego zmienna na false oraz przestanie wyswietlania owoca w panelu
                             if (periodFruit >= seconds(20) && collisionPacmanApple == true)
                             {
                                 collisionPacmanApple = false;
@@ -462,7 +470,7 @@ int main()
                                 directionGhost3 = collisionGhostBlock(ghost3, tableBlocks[i], directionGhost3);
                                 directionGhost4 = collisionGhostBlock(ghost4, tableBlocks[i], directionGhost4);
                             }
-
+                            // wywolanienie funkcji odpowiadajace za ruch duszkow
                             ghost1.updateChange(directionGhost1, periodFruit, collisionPacmanCherry, level);
                             ghost2.updateChange(directionGhost2, periodFruit, collisionPacmanCherry, level);
                             ghost3.updateChange(directionGhost3, periodFruit, collisionPacmanCherry, level);
@@ -475,6 +483,7 @@ int main()
 
                             if (collisionPacmanOrange == true)
                             {
+                                // podczas dzialania pomaranczy sprawdzamy czy uzytkownik moze wykonac przyspieszony ruch pacmanem
                                 for (int i = 0; i < blocksAmount; i++)
                                 {
                                     if (Keyboard::isKeyPressed(Keyboard::Key::Right))
@@ -518,12 +527,13 @@ int main()
 
                                     }
                                 }
+                                // jesli nie dojdzie do kolizji z bloczkim to w jednej klatce dwa razy updatujemy ruch pacmana 
                                 if (collisionPackmanBlock == false)
                                 {
                                     pacman.update(collisionPacmanMushroom, periodFruit);
                                 }
                             }
-                            cout << level << endl;
+                            // gdy uzytkownik osiagnie dziesiaty level to konczy sie gra i informujemy go o jego osiagnieciach
                             if (level >= 10)
                             {
                                 while (backToMenu != true)
@@ -557,6 +567,7 @@ int main()
                                 }
                             }
 
+                            // gdy uzytkownik zbierze wszystkie punkty to pokazuja sie one na nowo i zwiekszamy wtedy poziom
                             if ((onlyPoints % 553) == 0)
                             {
                                 level++;
@@ -594,6 +605,7 @@ int main()
 
                             if(i % 5 == 0)
                             {
+                                // rysowanie obiektow
                                 window.draw(pacman);
                                 window.draw(ghost1);
                                 window.draw(ghost2);
@@ -635,17 +647,17 @@ int main()
                         }
                         backToMenu = false;
                         break;
+                    // gdy uzytkownik kliknie opcje
                     case 1:
-                        std::cout << "Option button" << endl;
                         while (backToMenu != true)
                         {
                             while (window.pollEvent(event))
                             {
-                                //window.clear(Color::Black);
+
                                 switch (event.type)
                                 {
                                 case Event::KeyReleased:
-                                    // poruszanie si� u�ytkownika w podmenu
+                                    // poruszanie sie uzytkownika w podmenu
                                     switch (event.key.code)
                                     {
                                     case Keyboard::Escape:
@@ -658,11 +670,11 @@ int main()
                                         subMenu.moveDown(subMenu.subMenu, subMenu.color);
                                         break;
                                     case Keyboard::Return:
-                                        // w zale�no�ci od tego czy wybierzemy play, options lub exit to wykonaj� si� odpowienie czynno�ci
+                                        // w zaleznosci od tego co uzytkownik wybierze to wykonauja sie odpowiednie czynnosci
                                         switch (subMenu.getPressedItem())
                                         {
+                                        // gdy wybierze sie instrukcje
                                         case 0:
-                                            std::cout << "instrukcje hyhy" << endl;
                                             while (backToSubmenu != true)
                                             {
                                                 while (window.pollEvent(event))
@@ -690,8 +702,8 @@ int main()
                                             }
                                             backToSubmenu = false;
                                             break;
+                                        // gdy kliknie sie opcje o nas
                                         case 1:
-                                            cout << "o nas hyhy" << endl;
                                             while (backToSubmenu != true)
                                             {
                                                 while (window.pollEvent(event))
@@ -719,8 +731,8 @@ int main()
                                             }
                                             backToSubmenu = false;
                                             break;
+                                        // opcja spowoduje powrot do glownego menu
                                         case 2:
-                                            std::cout << "wroc do menu" << endl;
                                             backToMenu = true;
                                             break;
                                         }
@@ -735,6 +747,7 @@ int main()
 
                             window.clear(Color::Black);
 
+                            // rysowanie podmenu
                             subMenu.draw(window, subMenu.subMenu);
                             window.display();
                         }
@@ -754,6 +767,7 @@ int main()
         }
         window.clear(Color::Black);
 
+        // rysowanie glownego menu
         menu.draw(window, menu.menu);
         window.display();
     }
